@@ -1,5 +1,8 @@
 import { parse } from "url";
-import http from "http";
+import http, {
+    IncomingMessage,
+    ServerResponse,
+} from "http";
 import { DEFAULT_HEADER } from "./util/util";
 import controller from "./controller";
 import { createReadStream } from "fs";
@@ -9,33 +12,33 @@ const __dirname = import.meta.dir
 
 const allRoutes = {
   // GET: localhost:3000/form
-  "/form:get": (request: http.IncomingMessage, response: http.ServerResponse) => {
+  "/form:get": (request: IncomingMessage, response: ServerResponse) => {
     controller.getFormPage(request, response);
   },
   // POST: localhost:3000/form
-  "/form:post": (request: http.IncomingMessage, response: http.ServerResponse) => {
+  "/form:post": (request: IncomingMessage, response: ServerResponse) => {
     controller.sendFormData(request, response);
   },
   // POST: localhost:3000/images
-  "/images:post": (request: http.IncomingMessage, response: http.ServerResponse) => {
+  "/images:post": (request: IncomingMessage, response: ServerResponse) => {
     controller.uploadImages(request, response);
   },
   // GET: localhost:3000/feed
   // Shows instagram profile for a given user
-  "/feed:get": (request: http.IncomingMessage, response: http.ServerResponse) => {
+  "/feed:get": (request: IncomingMessage, response: ServerResponse) => {
     controller.getFeed(request, response);
   },
 
   // 404 routes
-  default: (request: http.IncomingMessage, response: http.ServerResponse) => {
+  default: (request: IncomingMessage, response: ServerResponse) => {
     response.writeHead(404, DEFAULT_HEADER);
-    createReadStream(path.join(__dirname, "views", "404.html"), "utf8").pipe(
+    createReadStream(path.join(__dirname, "views", "404.html"), { encoding: "utf8" }).pipe(
       response
     );
   },
 };
 
-function handler(request: http.IncomingMessage, response: http.ServerResponse) {
+function handler(request: IncomingMessage, response: ServerResponse) {
   const { url, method } = request;
 
   if (url === undefined) throw new Error("URL is undefined");
@@ -50,7 +53,7 @@ function handler(request: http.IncomingMessage, response: http.ServerResponse) {
   );
 }
 
-function handlerError(response) {
+function handlerError(response: ServerResponse) {
   return (error: Error) => {
     console.log("Something bad has happened", error.stack);
     response.writeHead(500, DEFAULT_HEADER);
@@ -64,4 +67,4 @@ function handlerError(response) {
   };
 }
 
-module.exports = handler;
+export default handler;

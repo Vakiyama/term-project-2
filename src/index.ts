@@ -1,7 +1,7 @@
 import http from "http";
-import handler from "./handler.js";
+import handler from "./handler";
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 7111;
 
 http
   .createServer(handler)

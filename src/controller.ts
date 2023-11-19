@@ -1,10 +1,14 @@
-const fs = require("fs");
-const { DEFAULT_HEADER } = require("./util/util");
-const path = require("path");
-var qs = require("querystring");
+import http, {
+    IncomingMessage,
+    ServerResponse,
+} from "http";
+import fs from "fs";
+import { DEFAULT_HEADER } from "./util/util";
+import path from "path";
+import qs from "querystring";
 
 const controller = {
-  getFormPage: (request, response) => {
+  getFormPage: (request: IncomingMessage, response: ServerResponse) => {
     return response.end(`
     <h1>Hello world</h1> <style> h1 {color:red;}</style>
     <form action="/form" method="post">
@@ -14,20 +18,20 @@ const controller = {
     </form>
     `);
   },
-  sendFormData: (request, response) => {
-    var body = "";
+  sendFormData: (request: IncomingMessage, response: ServerResponse) => {
+    let body = "";
 
     request.on("data", function (data) {
       body += data;
     });
 
     request.on("end", function () {
-      var post = qs.parse(body);
+      const post = qs.parse(body);
       console.log(post);
     });
   },
 
-  getFeed: (request, response) => {
+  getFeed: (request: IncomingMessage, response: ServerResponse) => {
     // console.log(request.url); try: http://localhost:3000/feed?username=john123
     response.write(`
     <html>
@@ -683,7 +687,7 @@ const controller = {
     response.end();
   },
 
-  uploadImages: (request, response) => {},
+  uploadImages: (request: IncomingMessage, response: ServerResponse) => {},
 };
 
-module.exports = controller;
+export default controller;
