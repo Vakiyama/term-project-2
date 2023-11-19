@@ -1,0 +1,22 @@
+{
+  "name": "term-project-2",
+  "version": "0.0.1",
+  "description": "Milestone 2",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "nodemon src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.9",
+    "formidable": "^3.5.1"
+  },
+  "devDependencies": {
+    "bun-types": "^0.5.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

@@ -1,0 +1,9 @@
+import http from "http";
+import handler from "./handler.js";
+
+const PORT = process.env.PORT || 3000;
+
+http
+  .createServer(handler)
+  .listen(PORT, () => console.log(`server is running at ${PORT}`));
+
