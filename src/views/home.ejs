@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Home</title>
+        <link rel="stylesheet" href="css/home.css">
+    </head>
+    <body>
+        <main>
+            <h1>Users</h1>
+            <% users.forEach(user => { %>
+                <div class="user_container"> 
+                    <div class="user_profile">
+                        <h2><%= user.username %></h2>
+                        <img src="<%= `images/${user.profile}` %>" />
+                    </div>
+                    <div class="button_container">
+                        <form action="/images" enctype="multipart/form-data" method="post">
+                            <div><input type="file" /></div>
+                            <input type="hidden" name="id" value="<%= user.id %>" />
+                            <input type="submit" value="Upload" />
+                        </form>
+                        <button><a href="<%= `/profile?id=${user.id}`%>">See Profile</a></button>
+                    </div>
+                </div>
+            <% }) %>
+        </main
+    </body>
+</html>
