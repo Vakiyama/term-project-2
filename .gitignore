@@ -4,7 +4,8 @@
 .home/
 
 # photos/media
-src/photos/*
+src/public/images/*
+src/uploads/*
 
 # Logs
 
@@ -59,6 +60,7 @@ build/Release
 # Dependency directories
 
 node_modules/
+./node_modules
 jspm_packages/
 
 # Snowpack dependency directory (https://snowpack.dev/)

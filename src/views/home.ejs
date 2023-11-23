@@ -17,8 +17,8 @@
                         <img src="<%= `images/${user.profile}` %>" />
                     </div>
                     <div class="button_container">
-                        <form action="/images" enctype="multipart/form-data" method="post">
-                            <div><input type="file" /></div>
+                        <form action="<%= `/images?id=${user.id}` %>" enctype="multipart/form-data" method="post">
+                            <div><input type="file" multiple="multiple" name="multipleFiles" /></div>
                             <input type="hidden" name="id" value="<%= user.id %>" />
                             <input type="submit" value="Upload" />
                         </form>

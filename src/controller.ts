@@ -53,8 +53,11 @@ const controller = {
         const fileName = uuid();
         console.log("upload received");
         const uploadPath = path.join(uploadDir, fileName);
+        console.log(uploadPath);
         const form = formidable({});
+        console.log("FORMIDABLE");
         form.on('fileBegin', async (formName, file) => {
+            console.log("file begin");
             if (!file.mimetype) throw new Error("no mimetype on file upload from client");
             const extension = file.mimetype.split("/")[1];
             if (extension !== "png" && extension !== "jpeg") {
@@ -62,11 +65,17 @@ const controller = {
             }
             const filename = `${uploadPath}.${extension}`;
             file.filepath = filename;
+            console.log(filename, "file begin");
             await addPhotoToUser(request, filename); // TODO: make sure database add behavior works, half implemented 
+        });
+
+        form.on('data', ({ name }) => {
+            console.log(name);
         });
 
         form.on('end', () => {
             response.writeHead(302, { location: "/" }); // improve this behavior?
+            console.log('-> upload done');
             response.end();
             // await sendEjs(response, "uploadComplete");
         });
@@ -76,6 +85,7 @@ const controller = {
 
 async function addPhotoToUser(request: IncomingMessage, filename: string) {
     if (request.url === undefined) throw new Error("URL is undefined");
+    console.log(request.url, "URL!!!");
     const user = await parseUser(request.url);
     user.photos.push(filename);
     await updateDatabase(user);
@@ -89,7 +99,6 @@ async function updateDatabase(user: User) {
 }
 
 async function parseUser(url: string): Promise<User> {
-    console.log(url);
     const queryParams = new URLSearchParams(url.split("?")[1]);
     const id = queryParams.get("id");
     if (!id) throw new Error("no id field in query");
