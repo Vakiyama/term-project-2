@@ -17,11 +17,16 @@
                 ];
 
                 shellHook = ''
-                    mkdir -p $PWD/.home
-                    export HOME=$PWD/.home 
+                    # set local home
+                    LOCAL_HOME=$PWD/.home
+                    mkdir -p $LOCAL_HOME
+                    
+                    # symlink nvim and starship 
+                    if [ ! -L "$PWD/.home/.config/starship.toml" ]; then
+                        ln -s $HOME/.config/starship.toml $LOCAL_HOME/.config/starship.toml
+                    fi
 
-                    export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath buildInputs}:$LD_LIBRARY_PATH"
-                    export LD_LIBRARY_PATH="${pkgs.stdenv.cc.cc.lib.outPath}/lib:$LD_LIBRARY_PATH"
+                    export HOME=$LOCAL_HOME
                 '';
             };
         }
