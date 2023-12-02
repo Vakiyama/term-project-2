@@ -18,7 +18,7 @@
                     </div>
                     <div class="button_container">
                         <form action="<%= `/images?id=${user.id}` %>" enctype="multipart/form-data" method="post">
-                            <div><input type="file" multiple="multiple" name="multipleFiles" /></div>
+                            <div><input type="file" multiple="multiple" name="multipleFiles" id="<%= `form-${user.id}`%>"/></div>
                             <input type="hidden" name="id" value="<%= user.id %>" />
                             <input type="submit" value="Upload" />
                         </form>
@@ -26,6 +26,17 @@
                     </div>
                 </div>
             <% }) %>
-        </main
+        </main>
+        <% users.forEach(user => { %> 
+        <script>
+            document.getElementById("<%= `form-${user.id}` %>").form.addEventListener("submit", (event) => {
+                const fileInput = document.getElementById("<%= `form-${user.id}` %>");
+                if (!fileInput.value) {
+                    event.preventDefault();
+                    alert("Please select a file to upload.");
+                }
+            });
+        </script>
+        <% }) %>
     </body>
 </html>

@@ -5,7 +5,7 @@
 
 # photos/media
 src/public/images/*
-src/uploads/*
+!src/public/images/.gitkeep
 
 # Logs
 

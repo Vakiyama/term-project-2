@@ -5,12 +5,13 @@ import {
 } from "http";
 import { DEFAULT_HEADER } from "./util/util";
 import controller from "./controller";
-import { 
-    createReadStream
-} from "fs";
-import { pipeline } from "stream";
-import { readFile } from "fs/promises";
+import { createReadStream } from "fs";
 import path from "path";
+import { 
+    handleCss,
+    handleImage,
+    handleError,
+} from "./publicHandlers";
 
 // const __dirname = import.meta.dir
 
@@ -59,29 +60,6 @@ function handler(request: IncomingMessage, response: ServerResponse) {
     return handleRender(request, response);
 }
 
-async function handleImage(request: IncomingMessage, response: ServerResponse) {
-    if (request.url === undefined) throw new Error("request url is undefined");
-    const imagePath = path.join(__dirname, "public", request.url);
-    const mime = getMimeFromPath(imagePath);
-    response.writeHead(200, { "Content-Type": mime });
-    pipeline(
-        createReadStream(imagePath),
-        response,
-        handleStreamError,
-    );
-}
-
-function getMimeFromPath(path: string) {
-    const splitPath = path.split(".")
-    let extension = splitPath[splitPath.length - 1];
-    if (extension === "jpg") extension = "jpeg";
-    return `image/${extension}`;
-}
-
-function handleStreamError(error: Error | null): void {
-    if (error) console.log(error);
-}
-
 function handleRender(request: IncomingMessage, response: ServerResponse) {
     const { url, method } = extractRequestParameters(request);
 
@@ -92,29 +70,6 @@ function handleRender(request: IncomingMessage, response: ServerResponse) {
     return Promise.resolve(chosen(request, response)).catch(
         handleError(response),
     );
-}
-
-async function handleCss(response: ServerResponse, url: string) {
-    const cssPath = path.join(__dirname, "public", url);
-    const cssString = await readFile(cssPath, { encoding: "utf8" });
-    response.writeHead(200, {
-        "Content-Type": "text/css",
-    });
-    response.end(cssString);
-}
-
-function handleError(response: ServerResponse) {
-    return (error: Error) => {
-        console.log("Something bad has happened", error, error.stack);
-        response.writeHead(500, DEFAULT_HEADER);
-        response.write(
-            JSON.stringify({
-                error: "Internal server error",
-            })
-        );
-
-        return response.end();
-    };
 }
 
 export default handler;
