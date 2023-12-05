@@ -31,31 +31,30 @@ const controller = {
         if (request.url === undefined) throw new Error("URL is undefined");
         const user = await parseUser(request.url);
         response.writeHead(200, DEFAULT_HEADER);
-        console.log(user, "user");
         await sendEjs(response, "profile", user);
     },
     uploadImages: handleImageUpload,
 };
 
 async function handleImageUpload(request: IncomingMessage, response: ServerResponse) {
-        const fileID = uuid();
-        const uploadPath = path.join(uploadDir, fileID);
-        const form = formidable({});
-        form.on('fileBegin', async (formName, file) => {
-            if (!file.mimetype) throw new Error("no mimetype on file upload from client");
-            const extension = file.mimetype.split("/")[1];
-            if (extension !== "png" && extension !== "jpeg") {
-                throw new Error("invalid mime type");
-            }
-            const filePath = `${uploadPath}.${extension}`;
-            file.filepath = filePath ;
-            await addPhotoToUser(request, `${fileID}.${extension}`); 
-        });
-        form.on('end', () => {
-            response.writeHead(302, { location: "/" }); // improve this behavior?
-            response.end();
-        });
-        await form.parse(request);
+    const fileID = uuid();
+    const uploadPath = path.join(uploadDir, fileID);
+    const form = formidable({});
+    form.on('fileBegin', async (formName, file) => {
+        if (!file.mimetype) throw new Error("no mimetype on file upload from client");
+        const extension = file.mimetype.split("/")[1];
+        if (extension !== "png" && extension !== "jpeg") {
+            throw new Error("invalid mime type");
+        }
+        const filePath = `${uploadPath}.${extension}`;
+        file.filepath = filePath ;
+        await addPhotoToUser(request, `${fileID}.${extension}`); 
+    });
+    form.on('end', () => {
+        response.writeHead(302, { location: "/" }); // improve this behavior?
+        response.end();
+    });
+    await form.parse(request);
 };
 
 export async function parseUser(url: string): Promise<User> {
